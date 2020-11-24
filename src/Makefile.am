@@ -468,7 +468,8 @@ crypto_libbitcoin_crypto_base_a_SOURCES += \
   crypto/ethash/lib/ethash/progpow.cpp \
   crypto/ethash/lib/keccak/keccak.c \
   crypto/ethash/lib/keccak/keccakf1600.c \
-  crypto/ethash/lib/keccak/keccakf800.c
+  crypto/ethash/lib/keccak/keccakf800.c \
+  crypto/progpow.cpp
 
 if USE_ASM
 crypto_libbitcoin_crypto_base_a_SOURCES += crypto/sha256_sse4.cpp

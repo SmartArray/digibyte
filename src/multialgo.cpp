@@ -25,6 +25,8 @@ int GetAlgoWorkFactor(int nHeight, int algo)
         return 128 * 8;
     case ALGO_RANDOMX:
         return 1;
+    case ALGO_PROGPOW:
+        return 1;
     default:
         return 1;
     }
@@ -47,6 +49,8 @@ int GetVersionForAlgo(int algo)
         return BLOCK_VERSION_ODO;
     case ALGO_RANDOMX:
         return BLOCK_VERSION_RANDOMX;
+    case ALGO_PROGPOW:
+        return BLOCK_VERSION_PROGPOW;
     default:
         return 0;
     }
@@ -69,6 +73,8 @@ int GetAlgo(int nVersion)
         return ALGO_ODO;
     case BLOCK_VERSION_RANDOMX:
         return ALGO_RANDOMX;
+    case BLOCK_VERSION_PROGPOW:
+        return ALGO_PROGPOW;
     }
     return ALGO_UNKNOWN;
 }
@@ -90,6 +96,8 @@ std::string GetAlgoName(int Algo)
         return std::string("odo");
     case ALGO_RANDOMX:
         return std::string("randomx");
+    case ALGO_PROGPOW:
+        return std::string("progpow");
     }
     return std::string("unknown");
 }
@@ -122,6 +130,8 @@ int GetAlgoByName(std::string strAlgo, int fallback)
         return ALGO_ODO;
     else if (strAlgo == "rxhash" || strAlgo == "randomx")
         return ALGO_RANDOMX;
+    else if (strAlgo == "progpow")
+        return ALGO_PROGPOW;
     else
         return fallback;
 }

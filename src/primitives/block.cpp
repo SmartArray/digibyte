@@ -11,6 +11,7 @@
 #include <crypto/hashodo.h>
 #include <crypto/hashqubit.h>
 #include <crypto/hashskein.h>
+#include <crypto/progpow.h>
 #include <primitives/moneroheader.h>
 #include <hash.h>
 #include <util/strencodings.h>
@@ -53,6 +54,14 @@ uint256 CBlockHeader::GetPoWAlgoHash(int height) const
         seedmanager.updateheight(height);
         uint256 thash;
         serialize_monero_hash(BEGIN(nVersion), BEGIN(thash), blk_reader, height);
+        return thash;
+    }
+    case ALGO_PROGPOW: {
+        uint256 thash;
+        {
+            progpowhash instance;
+            instance.hash(*this, thash, height);
+        }
         return thash;
     }
     case ALGO_UNKNOWN:
