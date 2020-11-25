@@ -104,6 +104,10 @@ static UniValue getnetworkhashps(const JSONRPCRequest& request)
 
 static UniValue generateBlocks(const CTxMemPool& mempool, const CScript& coinbase_script, int nGenerate, uint64_t nMaxTries, int algo)
 {
+    static bool fOneThread;
+    if (fOneThread) return {};
+    fOneThread = true;
+
     int nHeightEnd = 0;
     int nHeight = 0;
 
@@ -148,6 +152,7 @@ static UniValue generateBlocks(const CTxMemPool& mempool, const CScript& coinbas
         ++nHeight;
         blockHashes.push_back(pblock->GetHash().GetHex());
     }
+    fOneThread = false;
     return blockHashes;
 }
 
