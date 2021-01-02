@@ -185,6 +185,7 @@ LCOV_FILTER_PATTERN = \
 	-p "/usr/lib/" \
 	-p "/usr/lib64/" \
 	-p "src/leveldb/" \
+	-p "src/btree/" \
 	-p "src/crc32c/" \
 	-p "src/bench/" \
 	-p "src/univalue" \

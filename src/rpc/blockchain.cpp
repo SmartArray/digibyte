@@ -1379,6 +1379,7 @@ static UniValue getchaintips(const JSONRPCRequest& request)
     std::set<const CBlockIndex*> setOrphans;
     std::set<const CBlockIndex*> setPrevs;
 
+    // for (const std::pair<const uint256, CBlockIndex*>& item : ::BlockIndex())
     for (const std::pair<const uint256, CBlockIndex*>& item : ::BlockIndex())
     {
         if (!::ChainActive().Contains(item.second)) {

@@ -114,6 +114,12 @@ AC_ARG_ENABLE([wallet],
   [enable_wallet=$enableval],
   [enable_wallet=yes])
 
+AC_ARG_ENABLE([btree],
+  [AS_HELP_STRING([--disable-btree],
+  [disable btree (enabled by default)])],
+  [enable_btree=$enableval],
+  [enable_btree=yes])
+
 AC_ARG_WITH([miniupnpc],
   [AS_HELP_STRING([--with-miniupnpc],
   [enable UPNP (default is yes if libminiupnpc is found)])],
@@ -1088,6 +1094,7 @@ if test "x$enable_fuzz" = "xyes"; then
   bitcoin_enable_qt=no
   bitcoin_enable_qt_test=no
   bitcoin_enable_qt_dbus=no
+  enable_btree=no
   enable_wallet=no
   use_bench=no
   use_upnp=no
@@ -1426,6 +1433,16 @@ else
   AC_MSG_RESULT(no)
 fi
 
+dnl enable btree
+AC_MSG_CHECKING([if btree should be enabled])
+if test x$enable_btree != xno; then
+  AC_MSG_RESULT(yes)
+  AC_DEFINE_UNQUOTED([ENABLE_BTREE],[1],[Define to 1 to enable btree implementation])
+
+else
+  AC_MSG_RESULT(no)
+fi
+
 dnl enable upnp support
 AC_MSG_CHECKING([whether to build with support for UPnP])
 if test x$have_miniupnpc = xno; then
@@ -1517,6 +1534,7 @@ fi
 AM_CONDITIONAL([TARGET_DARWIN], [test x$TARGET_OS = xdarwin])
 AM_CONDITIONAL([BUILD_DARWIN], [test x$BUILD_OS = xdarwin])
 AM_CONDITIONAL([TARGET_WINDOWS], [test x$TARGET_OS = xwindows])
+AM_CONDITIONAL([ENABLE_BTREE],[test x$enable_btree = xyes])
 AM_CONDITIONAL([ENABLE_WALLET],[test x$enable_wallet = xyes])
 AM_CONDITIONAL([ENABLE_TESTS],[test x$BUILD_TEST = xyes])
 AM_CONDITIONAL([ENABLE_FUZZ],[test x$enable_fuzz = xyes])
@@ -1661,6 +1679,7 @@ echo "  with test     = $use_tests"
 if test x$use_tests != xno; then
     echo "    with fuzz   = $enable_fuzz"
 fi
+echo "  with btree    = $enable_btree"
 echo "  with bench    = $use_bench"
 echo "  with upnp     = $use_upnp"
 echo "  use asm       = $use_asm"

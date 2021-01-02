@@ -8,6 +8,7 @@
 #include <chainparams.h>
 #include <multialgo.h>
 #include <validation.h>
+#include <stdio.h>
 
 /**
  * CChain implementation
@@ -92,7 +93,7 @@ const CBlockIndex* CBlockIndex::GetAncestor(int height) const
     }
 
     const CBlockIndex* pindexWalk = this;
-    int heightWalk = nHeight;
+    int heightWalk = nHeight; //printf("GetAncestor(%d) [nHeight=%d]\n", height, nHeight);
     while (heightWalk > height) {
         int heightSkip = GetSkipHeight(heightWalk);
         int heightSkipPrev = GetSkipHeight(heightWalk - 1);
@@ -104,6 +105,7 @@ const CBlockIndex* CBlockIndex::GetAncestor(int height) const
             pindexWalk = pindexWalk->pskip;
             heightWalk = heightSkip;
         } else {
+            //printf("  pIndexWalk: h=%d pprev=%p [heightWalk=%d]\n", pindexWalk->nHeight, pindexWalk->pprev, heightWalk);
             assert(pindexWalk->pprev);
             pindexWalk = pindexWalk->pprev;
             heightWalk--;

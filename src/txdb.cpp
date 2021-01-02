@@ -249,6 +249,8 @@ bool CBlockTreeDB::ReadFlag(const std::string &name, bool &fValue) {
 bool CBlockTreeDB::LoadBlockIndexGuts(const Consensus::Params& consensusParams, std::function<CBlockIndex*(const uint256&)> insertBlockIndex)
 {
     std::unique_ptr<CDBIterator> pcursor(NewIterator());
+    unsigned long blocksLoaded = 0;
+    unsigned long counter = 0;
 
     pcursor->Seek(std::make_pair(DB_BLOCK_INDEX, uint256()));
 
@@ -273,6 +275,13 @@ bool CBlockTreeDB::LoadBlockIndexGuts(const Consensus::Params& consensusParams, 
                 pindexNew->nNonce         = diskindex.nNonce;
                 pindexNew->nStatus        = diskindex.nStatus;
                 pindexNew->nTx            = diskindex.nTx;
+
+                // printf("counter = %d\n", counter);
+                if (++counter >= 100000) {
+                    blocksLoaded += (unsigned long) counter;
+                    counter = 0;
+                    LogPrintf("%ld block headers loaded\n", blocksLoaded);
+                }
 
                 // if (!CheckProofOfWork(pindexNew->GetBlockHash(), pindexNew->nBits, consensusParams))
                 //     return error("%s: CheckProofOfWork failed: %s", __func__, pindexNew->ToString());

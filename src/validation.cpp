@@ -4142,8 +4142,9 @@ CBlockIndex * BlockManager::InsertBlockIndex(const uint256& hash)
 
     // Return existing
     BlockMap::iterator mi = m_block_index.find(hash);
-    if (mi != m_block_index.end())
+    if (mi != m_block_index.end()) {
         return (*mi).second;
+    }
 
     // Create new
     CBlockIndex* pindexNew = new CBlockIndex();

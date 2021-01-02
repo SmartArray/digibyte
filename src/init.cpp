@@ -841,6 +841,11 @@ void InitParameterInteraction()
             LogPrintf("%s: parameter interaction: -blocksonly=1 -> setting -whitelistrelay=0\n", __func__);
     }
 
+    if (gArgs.GetBoolArg("-nosuperhash", DEFAULT_SUPERHASH)) {
+        if (gArgs.SoftSetBoolArg("-disablesuperhashing", true))
+            LogPrintf("%s: parameter interaction: -nosuperhash=1 -> setting -disablesuperhashing=1\n", __func__);        
+    }
+
     // Forcing relay from whitelisted hosts implies we will accept relays from them in the first place.
     if (gArgs.GetBoolArg("-whitelistforcerelay", DEFAULT_WHITELISTFORCERELAY)) {
         if (gArgs.SoftSetBoolArg("-whitelistrelay", true))
@@ -1890,6 +1895,10 @@ bool AppInitMain(NodeContext& node)
     }
     if (!node.connman->Start(*node.scheduler, connOptions)) {
         return false;
+    }
+
+    if (!gArgs.IsArgSet("-disablesuperhashing")) {
+        LogPrintf("Launching superhashing thread...\n");
     }
 
     // ********************************************************* Step 13: finished

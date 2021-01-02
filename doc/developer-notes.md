@@ -860,6 +860,10 @@ Current subtrees include:
   - **Note**: Follow the instructions in [Upgrading LevelDB](#upgrading-leveldb) when
     merging upstream changes to the LevelDB subtree.
 
+- src/robin-map
+  - Upstream at https://github.com/Tessil/robin-map ; Maintained by Tessil
+  - Used to improve the initialization efficiency in Digibyte
+
 - src/crc32c
   - Used by leveldb for hardware acceleration of CRC32C checksums for data integrity.
   - Upstream at https://github.com/google/crc32c ; Maintained by Google.

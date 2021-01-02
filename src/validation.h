@@ -23,6 +23,10 @@
 #include <versionbits.h>
 #include <serialize.h>
 
+#ifdef ENABLE_BTREE
+#include <btree_map.h>
+#endif
+
 #include <atomic>
 #include <map>
 #include <memory>
@@ -137,11 +141,27 @@ struct BlockHasher
     size_t operator()(const uint256& hash) const { return ReadLE64(hash.begin()); }
 };
 
+struct BlockComperator
+{
+   bool operator() (const uint256& lhs, const uint256& rhs) const
+   {
+       return ReadLE64(lhs.begin()) < ReadLE64(rhs.begin());
+   }
+};
+
 extern RecursiveMutex cs_main;
 extern CBlockPolicyEstimator feeEstimator;
 extern CTxMemPool mempool;
 extern CTxMemPool stempool;
+
+#ifdef ENABLE_ROBINMAP
+typedef btree::btree_map<uint256,
+                       CBlockIndex*,
+                       BlockComperator> BlockMap;
+#else
 typedef std::unordered_map<uint256, CBlockIndex*, BlockHasher> BlockMap;
+#endif
+
 extern Mutex g_best_block_mutex;
 extern std::condition_variable g_best_block_cv;
 extern uint256 g_best_block;

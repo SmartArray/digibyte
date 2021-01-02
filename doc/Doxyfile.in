@@ -863,6 +863,7 @@ RECURSIVE              = YES
 
 EXCLUDE                = src/crc32c \
                          src/leveldb \
+                         src/robin-map \
                          src/json \
                          src/test \
                          src/qt/test
