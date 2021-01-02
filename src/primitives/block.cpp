@@ -64,14 +64,6 @@ uint256 CBlockHeader::GetPoWAlgoHash(int height) const
         }
         return thash;
     }
-    case ALGO_PROGPOW: {
-        uint256 thash;
-        {
-            progpowhash instance;
-            instance.hash(*this, thash, height);
-        }
-        return thash;
-    }
     case ALGO_UNKNOWN:
         return ArithToUint256(~arith_uint256(0));
     }
