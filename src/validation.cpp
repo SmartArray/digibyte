@@ -1172,75 +1172,83 @@ bool ReadRawBlockFromDisk(std::vector<uint8_t>& block, const CBlockIndex* pindex
 }
 
 CAmount GetDGBSubsidy(int nHeight, const Consensus::Params& consensusParams) {
-	// thanks to RealSolid & WDC for helping out with this code
-	CAmount qSubsidy;
+    // thanks to RealSolid & WDC for helping out with this code
+    CAmount qSubsidy;
     
-	if (nHeight < consensusParams.alwaysUpdateDiffChangeTarget)
-	{
-		qSubsidy = 8000*COIN;
-		int blocks = nHeight - consensusParams.nDiffChangeTarget;
-		int weeks = (blocks / consensusParams.patchBlockRewardDuration)+1;
-		//decrease reward by 0.5% every 10080 blocks
-		for(int i = 0; i < weeks; i++)  qSubsidy -= (qSubsidy/200);
-	}
-	else if(nHeight<consensusParams.workComputationChangeTarget)
-	{
-		qSubsidy = 2459*COIN;
-		int blocks = nHeight - consensusParams.alwaysUpdateDiffChangeTarget;
-		int weeks = (blocks / consensusParams.patchBlockRewardDuration2)+1;
-		//decrease reward by 1% every month
-		for(int i = 0; i < weeks; i++)  qSubsidy -= (qSubsidy/100);
-	}
-	else
-	{
-		//hard fork point: 1.43M
-		//subsidy at hard fork: 2157
-		//monthly decay factor: 98884/100000
-		//last block number: 41668798
-		//expected years after hard fork: 19.1395
+    if (nHeight < consensusParams.alwaysUpdateDiffChangeTarget)
+    {
+        qSubsidy = 8000 * COIN;
+        int blocks = nHeight - consensusParams.nDiffChangeTarget;
+        int weeks = (blocks / consensusParams.patchBlockRewardDuration) + 1;
+        // decrease reward by 0.5% every 10080 blocks
+        for (int i = 0; i < weeks; i++)
+        {
+            qSubsidy -= (qSubsidy / 200);
+        }
+    }
+    else if (nHeight < consensusParams.workComputationChangeTarget)
+    {
+        qSubsidy = 2459 * COIN;
+        int blocks = nHeight - consensusParams.alwaysUpdateDiffChangeTarget;
+        int weeks = (blocks / consensusParams.patchBlockRewardDuration2) + 1;
+        // decrease reward by 1% every month
+        for(int i = 0; i < weeks; i++)
+        {
+            qSubsidy -= (qSubsidy / 100);
+        }
+    }
+    else
+    {
+        // hard fork point: 1.43M
+        // subsidy at hard fork: 2157
+        // monthly decay factor: 98884/100000
+        // last block number: 41668798
+        // expected years after hard fork: 19.1395
+        qSubsidy = 2157 * COIN / 2;
+        int64_t blocks = nHeight - consensusParams.workComputationChangeTarget;
 
-		qSubsidy = 2157*COIN/2;
-		int64_t blocks = nHeight - consensusParams.workComputationChangeTarget;
-		int64_t months = blocks*15/(3600*24*365/12);
-		for(int64_t i = 0; i < months; i++)
-		{
-			qSubsidy*=98884;
-			qSubsidy/=100000;
-		}
-	}
+        int64_t months = blocks * BLOCK_TIME_SECONDS / SECONDS_PER_MONTH;
 
-	return qSubsidy;
+        for (int64_t i = 0; i < months; i++)
+        {
+            qSubsidy *= 98884;
+            qSubsidy /= 100000;
+        }
+    }
 
+    return qSubsidy;
 }
 
 CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
 {
-	CAmount nSubsidy = COIN;
-     LogPrintf("block height for reward is %d\n", nHeight);
-	if(nHeight < consensusParams.nDiffChangeTarget) {
-		//this is pre-patch, reward is 8000.
-		nSubsidy = 8000 * COIN;
+    CAmount nSubsidy = COIN;
+    LogPrintf("block height for reward is %d\n", nHeight);
+    if (nHeight < consensusParams.nDiffChangeTarget) {
+        if (nHeight < 1440) // 1440
+        {
+            nSubsidy = 72000 * COIN;
+        }
+        else if (nHeight < 5760) // 5760
+        {
+            nSubsidy = 16000 * COIN;
+        }
+        else
+        {
+            // this is pre-patch, reward is 8000.
+            nSubsidy = 8000 * COIN;
+        }
 
-		if(nHeight < 1440)  //1440
-		{
-			nSubsidy = 72000 * COIN;
-		}
-		else if(nHeight < 5760)  //5760
-		{
-			nSubsidy = 16000 * COIN;
-		}
+    } else {
+        // patch takes effect after 67,200 blocks solved
+        nSubsidy = GetDGBSubsidy(nHeight, consensusParams);
+    }
 
-	} else {
-		//patch takes effect after 67,200 blocks solved
-		nSubsidy = GetDGBSubsidy(nHeight, consensusParams);
-	}
+    // make sure the reward is at least 1 DGB
+    if (nSubsidy < COIN) {
+        nSubsidy = COIN;
+    }
 
-	//make sure the reward is at least 1 DGB
-	if(nSubsidy < COIN) {
-		nSubsidy = COIN;
-	}
-
-	return nSubsidy;
+    return nSubsidy;
 }
 
 bool IsInitialBlockDownload()
