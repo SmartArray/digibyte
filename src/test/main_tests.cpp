@@ -131,7 +131,6 @@ static void TestBlockSubsidy(const Consensus::Params& consensusParams, int nMaxB
         int nHeightWithinFork = (nHeight - consensusParams.workComputationChangeTarget);
 
         int nMonths = nHeightWithinFork * BLOCK_TIME_SECONDS / SECONDS_PER_MONTH;
-        pow
         for (int i = 0; i < nMonths; ++i) {
             // Decay factor: 98884/100000
             nExpectedSubsidy *= 98884; 
