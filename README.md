@@ -1,4 +1,4 @@
-# Development is now occurring on the DigiByte-Core repo
+# Development is now occurring on the DigiByte-Core Repo
 
 As of 2020, development has now moved to the DigiByte-Core organization, under the digibyte repo
 
