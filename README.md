@@ -1,5 +1,5 @@
 What is DigiByte?
-----------------
+-----------------
 
 DigiByte (DGB) is a rapidly growing decentralized, global blockchain that was founded in early 2014 with a focus on cyber security, payments & secure communications technologies.
 
